@@ -64,7 +64,7 @@ void usciA1UartInit(){
 * Date: March 1st, 2017
 * Modified: <date of any mods> usually taken care of by rev control
 ************************************************************************************/
-void usciA1UartTxChar(unsigned char txChar) {
+void usciA1UartTxChar(char txChar) {
 
 	while (!(UCA1IFG & UCTXIFG)); // is this efficient ?
 		UCA1TXBUF = txChar;	 // if TXBUFF ready then transmit a byte by writing to it
@@ -84,20 +84,18 @@ void usciA1UartTxChar(unsigned char txChar) {
 * Date: March 1st, 2017
 * Modified: <date of any mods> usually taken care of by rev control
 ************************************************************************************/
-void usciA1UartTxString(unsigned char *txChar){
-	// while not a null character
-    while(*txChar != NULL_CHAR){
-	// transmit a character with usciA1UartTxChar and increment the pointer
-        usciA1UartTxChar(*txChar++);
-        }
+void usciA1UartTxString(char *txChar){
+    while(*txChar != NULL_CHAR)        // while not a null character
+        usciA1UartTxChar(*txChar++);    // transmit a character with usciA1UartTxChar and increment the pointer
 	}
 
-int usciA1UartTxBuffer(unsigned char* buffer, int buffLen){
+int usciA1UartTxBuffer(char* buffer, int buffLen){
     volatile int i = 0;
 
     for(i = 0; (i < buffLen) && (*buffer != NULL_CHAR) ; i++){
             usciA1UartTxChar(*buffer++);
     }
+    usciA1UartTxChar('\n');             // move terminal to next line
     return i;
 }
 
@@ -116,22 +114,17 @@ int usciA1UartTxBuffer(unsigned char* buffer, int buffLen){
 ************************************************************************************/
 char* usciA1UartGets(char* rxString){
     unsigned int i = 0;
-//    unsigned int validGets = 1;
 
     do{
-       while(!(UCA1IFG & UCRXIFG));
-       rxBuffer[i++] = UCA1RXBUF;
-       usciA1UartTxChar(UCA1RXBUF);
-    }while((UCA1RXBUF != NL_CHAR) && (i < BUFF_SZ));
+       while(!(UCA1IFG & UCRXIFG));     // check if RX is ready
+       rxBuffer[i++] = UCA1RXBUF;       // store received byte
+       usciA1UartTxChar(UCA1RXBUF);     // echo it back through TX
+    }while((UCA1RXBUF != NL_CHAR) && (i < BUFF_SZ));    // loop while user hasnt pressed enter and buffer isnt full
 
-//    if (i >= BUFF_SZ){
-//        validGets = 0;
-//    }
-//    else{
-        rxBuffer[i] = NULL_CHAR;
-        strcpy(rxString,rxBuffer);
-        usciA1UartTxChar('\n');
-//    }
+    rxBuffer[i] = NULL_CHAR;            // insert NULL into string
+    strcpy(rxString,rxBuffer);          //
+    usciA1UartTxChar('\n');             // move terminal to next line
+
     return rxString;
 }
 
@@ -142,8 +135,8 @@ __interrupt void USCI_A1_ISR(void) {
   case 0:break;
   case 2:
       // 5.6.1
-      //if(UCTXIFG)
-	  // UCA1TXBUF = UCA1RXBUF;
+//      if(UCTXIFG)
+//	   UCA1TXBUF = UCA1RXBUF;
     break;
   case 4:break;
   default: break;

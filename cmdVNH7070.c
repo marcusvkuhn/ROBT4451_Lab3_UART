@@ -57,7 +57,7 @@ int parseCmd(CMD* vnh7070Cmds, char* cmdLine){
                 token = strtok(NULL, DELIM);
                 // checks if token exists, is of lenght 1 and is alphabetic
                 if (token && isdigit((int)*token))
-                    ARGS[0] = (int)token;            // casts as integer the value (of a char) token is pointing to
+                    ARGS[0] = atoi(token);            // casts as integer the value (of a char) token is pointing to
                 else
                     cmdIndex = -1;      //
                 //if(!token)                 // if token is NULL, command is invalid, function will return -1
@@ -70,7 +70,7 @@ int parseCmd(CMD* vnh7070Cmds, char* cmdLine){
             for (i = 0; token && i < vnh7070Cmds[cmdIndex].nArgs; ++i){      // loops while token is valid and i is less than the nArgs for the command, same for every following for-loop
                 token = strtok(NULL, DELIM);
                 if (token)                                              // every following token here will be a double
-                    ARGS[i] = atof(token);            // atof converts to double, then it is stored into the array
+                    ARGS[i] = atoi(token);            // atof converts to double, then it is stored into the array
                 else if (!token)                // token invalid in the range of nArgs
                     cmdIndex = -1;
             }
@@ -121,13 +121,13 @@ int executeCMD(CMD* vnh7070Cmds, int cmdIndex){
     switch (cmdIndex)
     {
     case PWMFREQSET_IDX:
-        timerA0PwmFreqSet(vnh7070Cmds->args[0]);
+        timerA0PwmFreqSet(vnh7070Cmds[cmdIndex].args[0]);
         break;
     case VNHMOVE_IDX:
-        if(vnh7070Cmds->args[0])
-            vnh7070CW(vnh7070Cmds->args[1]);
-        else if(!vnh7070Cmds->args[0])
-            vnh7070CCW(vnh7070Cmds->args[1]);
+        if(vnh7070Cmds[cmdIndex].args[0])
+            vnh7070CW(vnh7070Cmds[cmdIndex].args[1]);
+        else if(!vnh7070Cmds[cmdIndex].args[0])
+            vnh7070CCW(vnh7070Cmds[cmdIndex].args[1]);
         break;
     case VNHBRAKE_IDX:
         vnh7070Brake();

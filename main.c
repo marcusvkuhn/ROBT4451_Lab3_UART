@@ -15,18 +15,32 @@
 void main(void) {
 
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
+    usciA1UartInit();
     timerA0Init(20000);
+
+    CMD vnh7070Cmds[MAX_CMDS]; //this is an array of vnh7070Cmds of type CMD
+    initVnh7070Cmds(vnh7070Cmds);
 
     //int txChars = 0;
     //char str[80];
     //unsigned char testChar[] = "BCIT MECHATRONICS\n";
     char rxString[50];
     unsigned char errorMsg[] = "Error!";
-    CMD vnh7070Cmds[MAX_CMDS]; //this is an array of vnh7070Cmds of type CMD
-    initVnh7070Cmds(vnh7070Cmds);
 
 
-    usciA1UartInit();
+
+
+//--------- probe test
+//    do{
+//        usciA1UartTxChar(0x7F);
+//    }while(1);
+
+//------- uart gets test
+//    do{
+//        usciA1UartGets(rxString);
+//        usciA1UartTxBuffer(rxString, strlen(rxString));
+//    }while(1);
+
     int cmdIndex;
         do{
             usciA1UartGets(rxString);

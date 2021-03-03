@@ -116,6 +116,8 @@ char vnh7070Brake(){
 
     if (!validBrakeCtrl & !validBrakeDutyCycle){
         P3OUT &= ~SEL;
+        P3OUT &= ~IN_A;
+        P3OUT &= ~IN_B;
         validBrake = 0;
     }
 

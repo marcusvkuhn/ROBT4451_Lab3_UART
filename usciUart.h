@@ -21,11 +21,11 @@
 
 void usciA1UartInit();
 
-void usciA1UartTxChar(unsigned char txChar);
+void usciA1UartTxChar(char txChar);
 
-void usciA1UartTxString(unsigned char* txChar);
+void usciA1UartTxString(char* txChar);
 
-int usciA1UartTxBuffer(unsigned char* buffer, int buffLen);
+int usciA1UartTxBuffer(char* buffer, int buffLen);
 
 char* usciA1UartGets(char* rxString);
 
